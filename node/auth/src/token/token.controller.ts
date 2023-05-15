@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { userModel } from "../db/db.connect";
 import { ApiException } from "../exception/api.exception";
 import { tokenService } from "./token.service";
+import { UserDto } from "../user/user.dto";
 class TokenController {
   verify: RequestHandler = async (req, res, next) => {
     try {
@@ -15,11 +16,11 @@ class TokenController {
       if (!decoded) return next(ApiException.UnauthorizedError());
       let user;
       if (typeof decoded !== "string") {
-        user = await userModel.find({ where: { id: decoded.id } });
+        user = await userModel.findOne({ where: { id: decoded.id } });
       }
       if (!user) return next(ApiException.UnauthorizedError);
 
-      res.json({ user });
+      res.json({ user: new UserDto(user) });
     } catch (error) {
       next(ApiException.UnauthorizedError());
     }

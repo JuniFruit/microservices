@@ -9,7 +9,7 @@ export const UPLOAD_CONFIG: fileUpload.Options = {
   limits: { fileSize: FILE_SIZE_LIMIT },
   safeFileNames: true,
   uploadTimeout: UPLOAD_TIMEOUT,
-  debug: true,
+  debug: false,
   limitHandler(req, res, next) {
     return next(ApiException.BadRequest("File exceeded the limit. Max is 1GB"));
   },

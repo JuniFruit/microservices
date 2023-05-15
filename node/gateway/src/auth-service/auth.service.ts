@@ -1,11 +1,11 @@
 import axios from "axios";
 import { ApiException } from "../exception/api.exception";
-import { IAuthResponse } from "./auth.types";
+import { IAuthResponse, IAuthVerifyResponse, IUserData } from "./auth.types";
 class AuthService {
-  async verify(header: string) {
+  async verify(header: string): Promise<IAuthVerifyResponse> {
     if (!header || !header.split(" ")[1]) throw ApiException.UnauthorizedError();
 
-    const user = await axios.post<IAuthResponse["data"]["user"]>(
+    const user = await axios.post<IAuthVerifyResponse>(
       //@ts-ignore
       `${process.env.AUTH_SERVICE_URI}/auth/verify`,
       {},

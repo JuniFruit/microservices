@@ -9,8 +9,8 @@ async function connectQueue() {
   try {
     connection = await amqp.connect(CONNECT_URL);
     channel = await connection.createChannel();
-    channel.assertQueue("videos", { durable: true });
-    channel.assertQueue("audios", { durable: true });
+    channel.assertQueue(process.env.VIDEO_Q || "", { durable: true });
+    channel.assertQueue(process.env.AUDIO_Q || "", { durable: true });
     console.log("RabbitMQ connected");
   } catch (error) {
     console.log(error);
@@ -21,4 +21,10 @@ connectQueue();
 
 const getChannel = () => channel;
 
-export { getChannel };
+const sendDataToQueue = async (queueName: string, data: Object) => {
+  if (!channel || !queueName)
+    throw new Error("Internal. No RabbitMQ channel found or queue was not specified");
+  channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), { persistent: true });
+};
+
+export { getChannel, sendDataToQueue };

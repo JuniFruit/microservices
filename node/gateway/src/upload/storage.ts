@@ -9,7 +9,7 @@ mongoose.connection.on("connected", () => {
 });
 const uploadsBucket = () =>
   new mongoose.mongo.GridFSBucket(db, {
-    bucketName: "uploads",
+    bucketName: process.env.BUCKET_NAME,
   });
 
 const upload = fileUpload(UPLOAD_CONFIG);

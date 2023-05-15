@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: converter-configmap
+data:
+  BUCKET_NAME: "uploads"
+  VIDEO_Q: "videos"
+  AUDIO_Q: "audios"

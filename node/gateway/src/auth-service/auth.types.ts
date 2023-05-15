@@ -10,3 +10,7 @@ export type IUserData = {
   id: number;
   username: string;
 };
+
+export type IAuthVerifyResponse = {
+  user: IUserData;
+};
