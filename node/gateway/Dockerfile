@@ -2,9 +2,9 @@ FROM node:19-alpine
 
 WORKDIR /app
 
-COPY package.json .
+COPY package.*json ./
 
-RUN npm run build
+RUN rm -rf node_modules && npm i
 
 COPY . .
 

@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev -r dotenv/config --respawn src/app dotenv_config_path=./.env.local",
     "tsc": "tsc",
-    "build": "npm install"
+    "build": "npm run tsc",
+    "start": "node build/src/app.js"
   },
   "keywords": [],
   "author": "",
