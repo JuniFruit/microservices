@@ -10,6 +10,6 @@ router.get("/download");
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 router.post("/register", authController.register);
-router.post("/upload", upload, uploadController.upload);
+router.post("/upload", verifyAuth, upload, uploadController.upload);
 
 export default router;

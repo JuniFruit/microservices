@@ -24,7 +24,8 @@ app.use(handleException);
 
 const start = async () => {
   try {
-    mongoose.connect(process.env.MONGO_URL!, {}).then(res => console.log("Connected to MongoDB"));
+    await mongoose.connect(process.env.MONGO_URL || "", {});
+    console.log("Mongo connected");
 
     app.listen(PORT, () => {
       console.log("Gateway service listening on port: " + PORT);

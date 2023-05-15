@@ -52,7 +52,7 @@ class UploadService {
     return "." + mimetype.slice(mimetype.length - 3, mimetype.length);
   }
 
-  private async sendMessage(data: any) {
+  private async sendMessage(data: Object) {
     await sendDataToQueue("videos", data);
     console.log("sent");
   }
