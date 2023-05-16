@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { userModel } from "../db/db.connect";
 import { ApiException } from "../exception/api.exception";
 import { tokenService } from "../token/token.service";
