@@ -8,8 +8,7 @@ class UserController {
       const errors = validationResult(req);
       if (!errors.isEmpty()) throw ApiException.BadRequest(`Registration failed`, errors.array());
 
-      const { username, password } = req.body;
-      const data = await userService.create(username, password);
+      const data = await userService.create(req.body);
       res.json({
         user: { ...data.user },
         accessToken: data.accessToken,

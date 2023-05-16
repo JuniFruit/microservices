@@ -35,13 +35,13 @@ class AuthController {
   };
   register: RequestHandler = async (req, res, next) => {
     try {
-      const { username, password } = req.body;
-      if (!username || !password) return next(ApiException.UnauthorizedError());
+      const { username, password, email } = req.body;
+      if (!username || !password || !email) return next(ApiException.UnauthorizedError());
 
       const auth_service_res = await axios.post<
         { username: string; password: string },
         IAuthResponse
-      >(`${process.env.AUTH_SERVICE_URI}/auth/register`, { username, password });
+      >(`${process.env.AUTH_SERVICE_URI}/auth/register`, { username, password, email });
 
       res.cookie("refreshToken", auth_service_res.data.refreshToken, cookieConfig);
       res.json({

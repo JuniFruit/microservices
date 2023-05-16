@@ -1,14 +1,11 @@
 import mongoose from "mongoose";
 
-let bucket: mongoose.mongo.GridFSBucket;
+let db: mongoose.mongo.Db;
 
 mongoose.connection.on("connected", () => {
-  const db = mongoose.connections[0].db;
-  bucket = new mongoose.mongo.GridFSBucket(db, {
-    bucketName: process.env.BUCKET_NAME,
-  });
+  db = mongoose.connections[0].db;
 });
 
-const getUploadsBucket = () => bucket;
+const getMongoDb = () => db;
 
-export { getUploadsBucket };
+export { getMongoDb };

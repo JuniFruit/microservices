@@ -3,10 +3,11 @@ import { authController } from "../auth-service/auth.controller";
 import { upload } from "../upload/storage";
 import { verifyAuth } from "../middleware/auth.middleware";
 import { uploadController } from "../upload/upload.controller";
+import { downloadController } from "../download/download.controller";
 
 const router = express.Router();
 
-router.get("/download");
+router.get("/download/:id", verifyAuth, downloadController.download);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 router.post("/register", authController.register);

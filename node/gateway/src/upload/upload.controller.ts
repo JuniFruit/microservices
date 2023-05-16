@@ -6,6 +6,7 @@ class UploadController {
     try {
       const result = await uploadService.upload(
         req.files?.videos,
+        (req as any)?.userData?.email,
         (req as any)?.userData?.username
       );
       res.json({ message: "Uploading is complete" });

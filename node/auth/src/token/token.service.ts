@@ -19,11 +19,12 @@ class TokenService {
   }
 
   async saveToken(userId: IUserDto["id"], token: string) {
-    const prevToken = await tokenModel.findOne({ where: { refreshToken: token } });
+    const prevToken = await tokenModel.findOne({ where: { owner: userId } });
 
     if (prevToken) {
       prevToken.refreshToken = token;
-      tokenModel.save(prevToken);
+      tokenModel.save({ ...prevToken });
+      return prevToken;
     }
 
     const newToken = tokenModel.create({ owner: userId, refreshToken: token });

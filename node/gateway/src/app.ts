@@ -5,6 +5,7 @@ import gatewayRouter from "./routes/index";
 import { handleException } from "./middleware/error.middleware";
 import mongoose from "mongoose";
 import cors from "cors";
+import { MONGO_CONFIG } from "./config/mongo";
 
 const app = express();
 const PORT = process.env.GATEWAY_SERVICE_PORT || 6000;
@@ -24,7 +25,7 @@ app.use(handleException);
 
 const start = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URL || "", {});
+    await mongoose.connect(process.env.MONGO_URL || "", MONGO_CONFIG);
     console.log("Mongo connected");
 
     app.listen(PORT, () => {

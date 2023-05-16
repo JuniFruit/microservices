@@ -5,5 +5,5 @@ export type IConsumedMsg = {
   mp3_name: string | null;
   video_size: number;
   mp3_size: number;
-  bucketName: string;
+  mp3_id: string;
 };

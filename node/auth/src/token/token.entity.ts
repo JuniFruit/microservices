@@ -1,4 +1,4 @@
-import { Column, OneToOne, Entity } from "typeorm";
+import { Column, OneToOne, Entity, JoinColumn } from "typeorm";
 import { BaseEntity } from "../utils/base.entity";
 import { UserEntity } from "../user/user.entity";
 import { IUserDto } from "../user/user.dto";
@@ -9,5 +9,6 @@ export class TokenEntity extends BaseEntity {
   refreshToken!: string;
 
   @OneToOne(() => UserEntity, user => user.id)
+  @JoinColumn()
   owner!: IUserDto["id"];
 }

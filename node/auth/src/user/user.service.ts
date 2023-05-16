@@ -3,16 +3,16 @@ import { userModel } from "../db/db.connect";
 import { ApiException } from "../exception/api.exception";
 import { tokenService } from "../token/token.service";
 import { UserDto } from "./user.dto";
-
+import { IUserFields } from "./user.type";
 class UserService {
-  async create(username: string, password: string) {
+  async create({ username, password, email }: IUserFields) {
     const isCreated = await userModel.findOne({ where: { username } });
 
     if (isCreated) throw ApiException.BadRequest(`User with this username already exists`);
 
     const hashedPass = await bcrypt.hash(password, 5);
 
-    const newUser = userModel.create({ username, password: hashedPass });
+    const newUser = userModel.create({ username, password: hashedPass, email });
     await userModel.save(newUser);
     const userDto = new UserDto(newUser);
     const tokenPair = await tokenService.generateTokenPair(userDto);

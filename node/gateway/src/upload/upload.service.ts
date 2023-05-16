@@ -3,19 +3,26 @@ import fs from "fs";
 import mongoose from "mongoose";
 import path from "path";
 import { ApiException } from "../exception/api.exception";
+import { getBucket, getMongoDb } from "../mongo-db/mongo";
 import { sendDataToQueue } from "../rabbitmq/connection";
-import { uploadsBucket as bucket } from "./storage";
 import { ISendMsg } from "./upload.type";
 
 class UploadService {
+  bucket: mongoose.mongo.GridFSBucket | null = null;
   async upload(
     fileInput: fileUpload.UploadedFile | fileUpload.UploadedFile[] | undefined,
+    email: string,
     username: string
   ) {
     if (!fileInput)
       throw ApiException.BadRequest(
         "No file provided or incorrect header. Try setting 'multipart/form-data'"
       );
+
+    const bucketName = username + "_bucket";
+    this.bucket = getBucket(bucketName, getMongoDb());
+
+    if (!this.bucket) throw new Error("Internal. Failed to create bucket");
 
     const fileArr = [];
     if (Array.isArray(fileInput)) {
@@ -33,18 +40,18 @@ class UploadService {
       const filePath = tempDir + username + file.name + this.getExtention(file.mimetype);
       await file.mv(filePath);
       const readStream = fs.createReadStream(filePath);
+
       await new Promise((res, rej) => {
         const writeStream = readStream.pipe(
-          bucket()
-            .openUploadStream(username + file.name, {
-              metadata: {
-                username: username,
-                originalName: file.name,
-                size: file.size,
-                mimetype: file.mimetype,
-                encoding: file.encoding,
-              },
-            })
+          this.bucket!.openUploadStream(username + file.name, {
+            metadata: {
+              username: username,
+              originalName: file.name,
+              size: file.size,
+              mimetype: file.mimetype,
+              encoding: file.encoding,
+            },
+          })
             .on("drain", (chunk: mongoose.mongo.GridFSChunk) => {
               chunksUploaded += chunk.data.byteLength;
               const percent = ((chunksUploaded / file.data.byteLength) * 100).toFixed(2);
@@ -55,20 +62,24 @@ class UploadService {
                 video_name: username + file.name,
                 mp3_name: null,
                 video_id: writeStream.id.toString(),
-                username: username,
+                email,
                 video_size: file.size,
+                bucketName,
                 mp3_size: 0,
               };
               messages.push(message);
               this.sendMessages(messages);
               this.cleanupTemp(filePath);
               writeStream.emit("close");
+              readStream.emit("close");
               res("Uploaded");
             })
             .on("error", async err => {
               if (err) {
+                writeStream.emit("close");
+                readStream.emit("close");
                 this.cleanupTemp(filePath);
-                await bucket().delete(writeStream.id);
+                this.bucket!.drop().catch((err: any) => rej(new Error("Internal." + err)));
                 rej(new Error("Internal." + err));
               }
             })
@@ -93,11 +104,13 @@ class UploadService {
       try {
         await sendDataToQueue(process.env.VIDEO_Q || "", msg);
       } catch (error) {
-        await bucket().delete(new mongoose.mongo.ObjectId(msg.video_id));
+        this.bucket!.drop().catch((err: any) => {
+          throw new Error("Internal." + err);
+        });
         throw new Error("Internal." + error);
       }
     }
-    console.log("sent");
+    console.log("Sent to " + process.env.VIDEO_Q + "queue");
   }
 }
 
