@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: gateway-configmap
 data:
-  AUTH_SERVICE_URI: "auth:5000"
+  AUTH_SERVICE_URI: "http://auth:5000"
   BUCKET_NAME: "uploads"
   VIDEO_Q: "videos"
   AUDIO_Q: "audios"
-  RABBIT_MQ_URL: "rabbimq:5672"
+  RABBIT_MQ_URL: "amqp://rabbitmq:5672"

@@ -6,4 +6,4 @@ data:
   BUCKET_NAME: "uploads"
   VIDEO_Q: "videos"
   AUDIO_Q: "audios"
-  RABBIT_MQ_URL: rabbimq:5672
+  RABBIT_MQ_URL: "amqp://rabbitmq:5672"

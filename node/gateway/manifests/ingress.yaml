@@ -3,17 +3,17 @@ kind: Ingress
 metadata:
   name: gateway-ingress
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: '0'
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
-    nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
-spec: 
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+spec:
   rules:
     - host: mp3converter.com
-      http: 
-        paths: 
+      http:
+        paths:
           - path: /
             pathType: Prefix
-            backend: 
+            backend:
               service:
                 name: gateway
                 port:

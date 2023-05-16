@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.GATEWAY_SERVICE_PORT || 6000;
 
 app.use(cors());
 app.use(bodyParser.json());

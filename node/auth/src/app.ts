@@ -3,7 +3,7 @@ import authRoutes from "./routes/auth.routes";
 import { handleException } from "./middleware/exception.middleware";
 import bodyParser from "body-parser";
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.AUTH_SERVICE_PORT || 5000;
 
 app.use(bodyParser.json());
 app.use("/auth", authRoutes);
