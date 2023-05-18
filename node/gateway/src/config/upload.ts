@@ -1,8 +1,10 @@
 import fileUpload from "express-fileupload";
 import { ApiException } from "../exception/api.exception";
+import { BusboyConfig } from "busboy";
+import { Request } from "express";
 
-const FILE_SIZE_LIMIT = 1024 * 1024 * 1024;
-const UPLOAD_TIMEOUT = 1000 * 60 * 5;
+export const FILE_SIZE_LIMIT = 1000000 * 400; // 400 MB
+export const UPLOAD_TIMEOUT = 1000 * 60 * 5;
 
 export const UPLOAD_CONFIG: fileUpload.Options = {
   createParentPath: true,
@@ -14,3 +16,12 @@ export const UPLOAD_CONFIG: fileUpload.Options = {
     return next(ApiException.BadRequest("File exceeded the limit. Max is 1GB"));
   },
 };
+
+export const getBusboyConfig = (req: Request): BusboyConfig => ({
+  headers: req.headers,
+  limits: {
+    fieldNameSize: 200,
+    fields: 5,
+    fileSize: FILE_SIZE_LIMIT,
+  },
+});

@@ -21,7 +21,7 @@ async function connectQueue() {
 
 connectQueue();
 
-const sendDataToQueue = async (queueName: string, data: Object) => {
+const sendDataToQueue = (queueName: string, data: Object) => {
   if (!channel || !queueName)
     throw new Error("Internal. No RabbitMQ channel found or queue was not specified");
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), { persistent: true });
