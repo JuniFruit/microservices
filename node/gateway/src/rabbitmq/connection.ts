@@ -1,5 +1,5 @@
 import amqp, { Channel, Connection } from "amqplib";
-
+import { QUEUE_CONFIG } from "../../../shared/rabbitmq.config";
 const CONNECT_URL = process.env.RABBIT_MQ_URL || "";
 
 let channel: Channel | undefined;
@@ -11,8 +11,8 @@ async function connectQueue() {
     console.log(CONNECT_URL);
     connection = await amqp.connect(CONNECT_URL);
     channel = await connection.createChannel();
-    channel.assertQueue(process.env.VIDEO_Q || "", { durable: true });
-    channel.assertQueue(process.env.AUDIO_Q || "", { durable: true });
+    channel.assertQueue(process.env.VIDEO_Q || "", QUEUE_CONFIG);
+    channel.assertQueue(process.env.AUDIO_Q || "", QUEUE_CONFIG);
     console.log("RabbitMQ connected");
   } catch (error) {
     console.log(error);

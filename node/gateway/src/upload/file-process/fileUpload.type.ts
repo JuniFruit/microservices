@@ -6,3 +6,12 @@ export type ReqFileMetadata = FileInfo & {
   size: number;
   username: string;
 };
+
+export interface IUploadTimer {
+  timeout: number;
+  timer: ReturnType<typeof setTimeout> | null | number;
+  callback: TimerHandler;
+
+  set: () => void;
+  clear: () => void;
+}
