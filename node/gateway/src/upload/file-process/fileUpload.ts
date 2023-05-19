@@ -2,7 +2,7 @@ import { FILE_SIZE_LIMIT, UPLOAD_TIMEOUT, getBusboyConfig } from "../../config/u
 import { RequestHandler } from "express-serve-static-core";
 import busboy from "busboy";
 import { ApiException } from "../../exception/api.exception";
-import { isAllowedReq } from "./utils";
+import { convertBytes, isAllowedReq } from "./utils";
 import mongoUpload from "./mongoUpload";
 import { ReqFileMetadata } from "./fileUpload.type";
 import { Transform, TransformCallback } from "stream";
@@ -16,11 +16,15 @@ class SizeTracker extends Transform {
 
   _transform(chunk: Buffer, encoding: BufferEncoding, callback: TransformCallback): void {
     if (this.bytes_read > FILE_SIZE_LIMIT)
-      return callback(ApiException.BadRequest("File size exceeded the limit. Max is 400 MB"));
+      return callback(
+        ApiException.BadRequest(
+          `File size exceeded the limit. Max is ${convertBytes(FILE_SIZE_LIMIT)}`
+        )
+      );
 
     this.bytes_read += chunk.byteLength;
     if (LOG_PROGRESS) {
-      console.log(`Bytes read: ${this.bytes_read}`);
+      console.log(`Read: ${convertBytes(this.bytes_read)}`);
     }
     callback(null, chunk);
   }

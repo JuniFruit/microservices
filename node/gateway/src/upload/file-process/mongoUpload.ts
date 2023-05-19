@@ -1,7 +1,7 @@
 import { FileInfo } from "busboy";
 import mongoose from "mongoose";
 import { getBucket, getMongoDb } from "../../mongo-db/mongo";
-import { sanitizeFilename } from "./utils";
+import { convertBytes, sanitizeFilename } from "./utils";
 import { LOG_PROGRESS } from "../../config/upload";
 
 let BYTES_UPLOADED = 0;
@@ -11,7 +11,7 @@ let BYTES_UPLOADED = 0;
 const trackDrain = (chunk: mongoose.mongo.GridFSChunk) => {
   BYTES_UPLOADED += chunk.data.byteLength;
   if (LOG_PROGRESS) {
-    console.log(`Loading... ${BYTES_UPLOADED} bytes uploaded`);
+    console.log(`Loading... ${convertBytes(BYTES_UPLOADED)} uploaded`);
   }
 };
 
@@ -46,7 +46,7 @@ const mongoUpload = (username: string, info: FileInfo) => {
       BYTES_UPLOADED = 0;
       mongoWritable.end();
 
-      rej(new Error("Internal." + err + " Bytes uploaded: " + BYTES_UPLOADED));
+      rej(new Error("Internal." + err + " Bytes uploaded: " + convertBytes(BYTES_UPLOADED)));
     });
   });
 

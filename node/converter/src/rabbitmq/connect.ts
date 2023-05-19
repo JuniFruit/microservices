@@ -1,5 +1,5 @@
 import amqp, { Channel, Connection } from "amqplib";
-import { QUEUE_CONFIG } from "../../../shared/rabbitmq.config";
+import { QUEUE_CONFIG } from "../config/rabbitmq";
 
 const CONNECT_URL = process.env.RABBIT_MQ_URL || "amqp://localhost:5672";
 let channel: Channel;
