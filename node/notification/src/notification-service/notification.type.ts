@@ -6,5 +6,5 @@ export type IConsumedMsg = {
   video_size: number;
   mp3_size: number;
   mp3_id: string;
-  isError: boolean;
+  username: string;
 };

@@ -1,4 +1,5 @@
 import { Request } from "express";
+import { ALLOWED_EXT } from "../../config/upload";
 
 const isAllowedReq = (req: Request) => {
   const ACCEPTABLE_CONTENT_TYPE = /^(multipart\/.+);(.*)$/i;
@@ -31,4 +32,9 @@ const convertBytes = (bytes: number) => {
   return `${bytes} BB`;
 };
 
-export { isAllowedReq, sanitizeFilename, convertBytes };
+const isAllowedExt = (filename: string) => {
+  const ext = filename.slice(filename.length - 3, filename.length);
+  return ALLOWED_EXT.includes(ext);
+};
+
+export { isAllowedReq, sanitizeFilename, convertBytes, isAllowedExt };

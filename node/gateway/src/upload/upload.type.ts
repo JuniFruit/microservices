@@ -5,4 +5,5 @@ export type ISendMsg = {
   mp3_name: string | null;
   video_size: number;
   mp3_size: number;
+  username: string;
 };

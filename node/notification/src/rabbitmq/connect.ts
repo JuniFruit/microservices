@@ -10,7 +10,9 @@ async function connectQueue() {
   try {
     connection = await amqp.connect(CONNECT_URL);
     channel = await connection.createChannel();
-    channel.assertQueue(process.env.AUDIO_Q || "", QUEUE_CONFIG);
+    await channel.assertQueue(process.env.AUDIO_Q!, QUEUE_CONFIG);
+    await channel.assertQueue(process.env.ERROR_Q! + "_messages", { durable: false });
+    await channel.assertQueue(process.env.DELETE_FILES_Q!, { durable: false });
     console.log("RabbitMQ connected");
   } catch (error) {
     console.log(error);

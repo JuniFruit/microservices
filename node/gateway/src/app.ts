@@ -6,6 +6,8 @@ import { handleException } from "./middleware/error.middleware";
 import mongoose from "mongoose";
 import cors from "cors";
 import { MONGO_CONFIG } from "./config/mongo";
+import { connectQueue } from "./rabbitmq/connection";
+import { RMQerrorService } from "./rabbitmq/error.service";
 
 const app = express();
 const PORT = process.env.GATEWAY_SERVICE_PORT || 6000;
@@ -25,9 +27,10 @@ app.use(handleException);
 
 const start = async () => {
   try {
+    await connectQueue();
     await mongoose.connect(process.env.MONGO_URL || "", MONGO_CONFIG);
     console.log("Mongo connected");
-
+    RMQerrorService.listen();
     app.listen(PORT, () => {
       console.log("Gateway service listening on port: " + PORT);
     });

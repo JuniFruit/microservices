@@ -8,18 +8,24 @@ let connection: Connection;
 
 async function connectQueue() {
   try {
-    console.log(CONNECT_URL);
     connection = await amqp.connect(CONNECT_URL);
     channel = await connection.createChannel();
-    channel.assertQueue(process.env.VIDEO_Q || "", QUEUE_CONFIG);
-    channel.assertQueue(process.env.AUDIO_Q || "", QUEUE_CONFIG);
+    await channel.assertQueue(process.env.VIDEO_Q!, QUEUE_CONFIG);
+    await channel.assertQueue(process.env.AUDIO_Q!, QUEUE_CONFIG);
+    await channel.assertQueue(process.env.ERROR_Q! + "_messages", { durable: false });
+    await channel.assertQueue(process.env.DELETE_FILES_Q!, { durable: false });
+    await channel.bindQueue(
+      process.env.ERROR_Q! + "_messages",
+      process.env.ERROR_Q!,
+      process.env.ERROR_Q!
+    ); // for simplicity in this project
     console.log("RabbitMQ connected");
   } catch (error) {
     console.log(error);
   }
 }
 
-connectQueue();
+const getChannel = () => channel;
 
 const sendDataToQueue = (queueName: string, data: Object) => {
   if (!channel || !queueName)
@@ -27,4 +33,4 @@ const sendDataToQueue = (queueName: string, data: Object) => {
   channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), { persistent: true });
 };
 
-export { channel, connection, sendDataToQueue };
+export { getChannel, connectQueue, sendDataToQueue };

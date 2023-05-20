@@ -14,9 +14,10 @@ class UploadController {
         mp3_name: "",
         mp3_size: 0,
         email: (req as any)?.userData?.email,
+        username: (req as any)?.userData?.username,
       };
 
-      sendDataToQueue(process.env.VIDEO_Q || "", message);
+      sendDataToQueue(process.env.VIDEO_Q!, message);
 
       res.json({
         message:

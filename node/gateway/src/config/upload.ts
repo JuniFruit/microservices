@@ -4,7 +4,8 @@ import { Request } from "express";
 export const FILE_SIZE_LIMIT = 1000000 * 400; // 400 MB
 export const UPLOAD_TIMEOUT = 1000 * 60 * 5; // 5 MIN
 export const MONGO_CHUNK_SIZE = 1048576; // 1 MB
-export const LOG_PROGRESS = process.env.LOG_PROGRESS; // logging uploading and downloading progress
+export const LOG_PROGRESS = process.env.LOG_PROGRESS === "true" ? true : false; // logging uploading and downloading progress
+export const ALLOWED_EXT = ["mp4", "mov", "avi", "wmv", "m4v", "m4p", "mpeg", "webm", "3gp"];
 
 export const getBusboyConfig = (req: Request): BusboyConfig => ({
   headers: req.headers,

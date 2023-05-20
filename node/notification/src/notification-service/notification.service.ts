@@ -1,29 +1,42 @@
-import { ConsumeMessage } from "amqplib";
-import { getChannel } from "../rabbitmq/connect";
-import { IConsumedMsg } from "./notification.type";
 import axios from "axios";
-import { handleException } from "../middleware/error.middleware";
+import { getChannel, sendDataToQueue } from "../rabbitmq/connect";
+import { IConsumedMsg } from "./notification.type";
 
 class NotificationService {
-  async listen() {
+  listen() {
     const channel = getChannel();
 
-    channel.consume(process.env.AUDIO_Q!, async msg => {
-      try {
-        if (!msg) return;
-        await this.notify(msg);
-        channel.ack(msg);
-      } catch (error: any) {
-        handleException(error);
-      }
+    channel.consume(process.env.AUDIO_Q!, msg => {
+      if (!msg) return;
+      const parsedMsg = JSON.parse(Buffer.from(msg.content).toString("utf-8"));
+
+      this.notify(parsedMsg)
+        .then(() => {
+          console.log("Message sent to " + parsedMsg.email);
+          channel.ack(msg);
+        })
+        .catch(err => {
+          console.error(err);
+          channel.reject(msg);
+        });
+    });
+
+    channel.consume(process.env.ERROR_Q! + "_messages", msg => {
+      if (!msg) return;
+      const parsedMsg = JSON.parse(Buffer.from(msg.content).toString("utf-8"));
+      this.notify(parsedMsg, true)
+        .then(() => {
+          console.log("Error message sent to " + parsedMsg.email);
+          channel.ack(msg);
+        })
+        .catch(err => console.log(err));
+
+      sendDataToQueue(process.env.DELETE_FILES_Q!, parsedMsg);
     });
   }
 
-  async notify(msg: ConsumeMessage) {
-    const parsedMsg: IConsumedMsg = JSON.parse(Buffer.from(msg.content).toString("utf-8"));
-    console.log(parsedMsg);
-
-    const activation_link = parsedMsg.isError
+  notify(parsedMsg: IConsumedMsg, isError = false) {
+    const activation_link = isError
       ? "We failed to generate file for you"
       : `${process.env.APP_URL}/${parsedMsg.mp3_id}`;
 
@@ -37,14 +50,12 @@ class NotificationService {
         to_email: parsedMsg.email,
       },
     };
-
-    const res = await axios.post(process.env.EMAIL_SEND_ENDPOINT!, data, {
+    return Promise.resolve("");
+    return axios.post(process.env.EMAIL_SEND_ENDPOINT!, data, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-
-    console.log(`Status for ${parsedMsg.email} transport is ${res.status} ${res.statusText}`);
   }
 }
 

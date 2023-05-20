@@ -1,15 +1,12 @@
 import { ConsumeMessage } from "amqplib";
 import { Buffer } from "buffer";
 import mongoose from "mongoose";
-import { ServiceException } from "../exception/Service.exception";
-import { handleException } from "../middleware/error.middleware";
+
 import { getChannel, sendDataToQueue } from "../rabbitmq/connect";
 import { IConsumedMsg } from "./converter.types";
-import { getMongoDb } from "./storage";
+import { getBucket, getMongoDb } from "../mongo-db/mongo";
 
 class ConverterService {
-  bucket: mongoose.mongo.GridFSBucket | null = null;
-
   async listen() {
     const channel = getChannel();
 
@@ -19,13 +16,16 @@ class ConverterService {
         await this.convert(msg);
         channel.ack(msg);
       } catch (error: any) {
-        handleException(error);
+        console.error(error);
+        channel.reject(msg!, true);
       }
     });
   }
 
   async convert(message: ConsumeMessage) {
-    const parsedMsg: IConsumedMsg = JSON.parse(Buffer.from(message.content).toString("utf-8"));
+    const parsedMsg: IConsumedMsg = await JSON.parse(
+      Buffer.from(message.content).toString("utf-8")
+    );
 
     const videoId = new mongoose.Types.ObjectId(parsedMsg.video_id);
     const messageToSend = {
@@ -33,20 +33,15 @@ class ConverterService {
       mp3_name: "test",
       mp3_size: 691245,
       mp3_id: "ssafafasfsaf",
-      isError: false,
     };
-    this.getBucket(parsedMsg.bucketName);
+    const bucketName = parsedMsg.username + "_bucket";
+    const bucket = getBucket(bucketName, getMongoDb());
     console.log(parsedMsg);
-    if (!this.bucket)
-      throw ServiceException.ProcessingFailure(
-        "Failed to get bucket: " + parsedMsg.bucketName,
-        message
-      );
 
     let downloadedChunks = 0;
-
     await new Promise((res, rej) => {
-      const readStream = this.bucket!.openDownloadStream(videoId)
+      const readStream = bucket
+        .openDownloadStream(videoId)
         .on("data", (chunk: any) => {
           downloadedChunks += chunk.byteLength;
           const percent = ((downloadedChunks / parsedMsg.video_size) * 100).toFixed(2);
@@ -60,14 +55,8 @@ class ConverterService {
         })
         .on("error", (err: any) => {
           readStream.emit("close");
-          rej(ServiceException.ProcessingFailure(err, message));
+          rej(Error("Internal." + err));
         });
-    });
-  }
-
-  private getBucket(bucketName: string) {
-    this.bucket = new mongoose.mongo.GridFSBucket(getMongoDb(), {
-      bucketName: bucketName,
     });
   }
 }

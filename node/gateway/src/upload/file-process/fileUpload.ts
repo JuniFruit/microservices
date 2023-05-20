@@ -1,8 +1,8 @@
-import { FILE_SIZE_LIMIT, UPLOAD_TIMEOUT, getBusboyConfig } from "../../config/upload";
+import { ALLOWED_EXT, FILE_SIZE_LIMIT, UPLOAD_TIMEOUT, getBusboyConfig } from "../../config/upload";
 import { RequestHandler } from "express-serve-static-core";
 import busboy from "busboy";
 import { ApiException } from "../../exception/api.exception";
-import { convertBytes, isAllowedReq } from "./utils";
+import { convertBytes, isAllowedExt, isAllowedReq } from "./utils";
 import mongoUpload from "./mongoUpload";
 import { ReqFileMetadata } from "./fileUpload.type";
 import { Transform, TransformCallback } from "stream";
@@ -40,6 +40,13 @@ const processRequest: RequestHandler = (req, res, next) => {
   const bb = busboy(getBusboyConfig(req));
 
   bb.on("file", (field, file, info) => {
+    if (!isAllowedExt(info.filename))
+      return next(
+        ApiException.BadRequest(
+          "Unsupported format" + `List of supported formats: ${ALLOWED_EXT.join(", ")}`
+        )
+      );
+
     const request = req as any;
 
     const uploadTimer = new UploadTimer(UPLOAD_TIMEOUT, () => {
