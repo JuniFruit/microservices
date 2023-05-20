@@ -50,7 +50,6 @@ class NotificationService {
         to_email: parsedMsg.email,
       },
     };
-    return Promise.resolve("");
     return axios.post(process.env.EMAIL_SEND_ENDPOINT!, data, {
       headers: {
         "Content-Type": "application/json",

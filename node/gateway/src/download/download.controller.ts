@@ -7,7 +7,7 @@ class DownloadContoller {
       const id = req.params.id;
       if (!id) return next(ApiException.BadRequest("File id is not present request params"));
 
-      downloadService.downloadMp3(id, (req as any).userData.username);
+      await downloadService.downloadMp3(id, (req as any).userData.username, res);
     } catch (error) {
       next(error);
     }

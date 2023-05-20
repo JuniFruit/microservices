@@ -25,16 +25,9 @@ const sanitizeFilename = (filename: string) => {
   return filename.replace(/\.|(<\w*|\w*>)/g, "");
 };
 
-const convertBytes = (bytes: number) => {
-  if (bytes >= 10 ** 9) return `${(bytes / 10 ** 9).toFixed(2)} GB`;
-  if (bytes >= 10 ** 6) return `${(bytes / 10 ** 6).toFixed(2)} MB`;
-  if (bytes >= 10 ** 3) return `${(bytes / 10 ** 3).toFixed(2)} KB`;
-  return `${bytes} BB`;
-};
-
 const isAllowedExt = (filename: string) => {
   const ext = filename.slice(filename.length - 3, filename.length);
   return ALLOWED_EXT.includes(ext);
 };
 
-export { isAllowedReq, sanitizeFilename, convertBytes, isAllowedExt };
+export { isAllowedReq, sanitizeFilename, isAllowedExt };

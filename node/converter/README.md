@@ -1,6 +1,6 @@
 # Description
 
-Converter service where the main converation logic is stored. App is listening to a RabbitMQ queue to consume and process messages. Converter needs mongodb url to download user's video and convert it, then it uploads result back to mongo
+Converter service where the main convertation logic is stored. App is listening to a RabbitMQ queue to consume and process messages. Converter needs mongodb url to download user's video and convert it, then it uploads result back to mongo
 
 ## Configuration
 

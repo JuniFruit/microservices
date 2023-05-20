@@ -7,3 +7,9 @@ export type IConsumedMsg = {
   mp3_size: number;
   username: string;
 };
+
+export type IMetadata = {
+  filename: string;
+  mimeType: string;
+  username: string;
+};

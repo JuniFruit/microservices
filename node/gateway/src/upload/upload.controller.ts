@@ -6,7 +6,6 @@ class UploadController {
   upload: RequestHandler = async (req, res, next) => {
     try {
       const fileInfo: ReqFileMetadata = (req as any).fileMetadata;
-      console.log(fileInfo);
       const message: ISendMsg = {
         video_id: fileInfo.id.toString(),
         video_size: fileInfo.size,

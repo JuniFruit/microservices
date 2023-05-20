@@ -3,7 +3,7 @@ import { getChannel } from "./connection";
 class RMQErrorService {
   listen() {
     const channel = getChannel();
-    if (!channel) throw new Error("Internal.No RabbitMQ channel was found");
+    if (!channel) throw Error("Internal.No RabbitMQ channel was found");
 
     channel.consume(process.env.DELETE_FILES_Q!, msg => {
       if (!msg) return;

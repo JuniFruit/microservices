@@ -1,8 +1,9 @@
 import { FileInfo } from "busboy";
 import mongoose from "mongoose";
 import { getBucket, getMongoDb } from "../../mongo-db/mongo";
-import { convertBytes, sanitizeFilename } from "./utils";
+import { sanitizeFilename } from "./utils";
 import { LOG_PROGRESS } from "../../config/upload";
+import { convertBytes } from "../../utils/general";
 
 let BYTES_UPLOADED = 0;
 
@@ -36,6 +37,7 @@ const mongoUpload = (username: string, info: FileInfo) => {
   const mongoWritablePromise = new Promise((res, rej) => {
     mongoWritable.on("finish", () => {
       BYTES_UPLOADED = 0;
+      console.log("Uploading finished");
       res("");
     });
     mongoWritable.on("error", async err => {
