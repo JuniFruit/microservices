@@ -21,6 +21,17 @@ spec:
       containers:
         - name: gateway
           image: junifruit/gateway
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              host:
+              scheme: HTTP
+              path: /health
+              port: 6001
           envFrom:
             - configMapRef:
                 name: gateway-configmap

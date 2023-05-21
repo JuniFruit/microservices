@@ -18,25 +18,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/", gatewayRouter);
 
-app.get("*", (req, res, next) => {
-  res.send("Gateway");
-  next();
-});
-
 app.use(handleException);
 
 const start = async () => {
-  try {
-    await connectQueue();
-    await mongoose.connect(process.env.MONGO_URL || "", MONGO_CONFIG);
-    console.log("Mongo connected");
-    RMQerrorService.listen();
-    app.listen(PORT, () => {
-      console.log("Gateway service listening on port: " + PORT);
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  const makeConnections = async () => {
+    try {
+      await connectQueue();
+      await mongoose.connect(process.env.MONGO_URL || "", MONGO_CONFIG);
+      await RMQerrorService.listen();
+
+      console.log("MongoDB connected");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  await makeConnections();
+
+  app.listen(PORT, () => {
+    console.log("Gateway service listening on port: " + PORT);
+  });
 };
 
 start();

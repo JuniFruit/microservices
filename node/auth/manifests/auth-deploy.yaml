@@ -23,6 +23,17 @@ spec:
           image: junifruit/auth
           ports:
             - containerPort: 5000
+          livenessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 3
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+            httpGet:
+              host:
+              scheme: HTTP
+              path: /health
+              port: 5000
           envFrom:
             - configMapRef:
                 name: auth-configmap

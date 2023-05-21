@@ -8,9 +8,10 @@ const postgresDB = new DataSource(getConfigTypeOrm());
 postgresDB
   .initialize()
   .then(() => {
-    console.log("success");
+    console.log("PostgreSQL connected");
   })
   .catch(e => console.log(e));
 
+export const getPostgresDB = () => postgresDB;
 export const userModel = postgresDB.getRepository(UserEntity);
 export const tokenModel = postgresDB.getRepository(TokenEntity);

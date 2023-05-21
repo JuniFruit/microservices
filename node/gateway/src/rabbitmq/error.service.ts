@@ -1,11 +1,11 @@
 import { getBucket, getMongoDb } from "../mongo-db/mongo";
 import { getChannel } from "./connection";
 class RMQErrorService {
-  listen() {
+  async listen() {
     const channel = getChannel();
-    if (!channel) throw Error("Internal.No RabbitMQ channel was found");
+    if (!channel) throw new Error("Internal.No RabbitMQ channel was found");
 
-    channel.consume(process.env.DELETE_FILES_Q!, msg => {
+    await channel.consume(process.env.DELETE_FILES_Q!, msg => {
       if (!msg) return;
       const parsedMsg = JSON.parse(Buffer.from(msg.content).toString("utf-8"));
 
