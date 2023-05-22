@@ -22,7 +22,7 @@ spec:
         - name: gateway
           image: junifruit/gateway
           livenessProbe:
-            initialDelaySeconds: 5
+            initialDelaySeconds: 30
             periodSeconds: 3
             timeoutSeconds: 5
             successThreshold: 1

@@ -8,6 +8,8 @@ import cors from "cors";
 import { MONGO_CONFIG } from "./config/mongo";
 import { connectQueue } from "./rabbitmq/connection";
 import { RMQerrorService } from "./rabbitmq/error.service";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const PORT = process.env.GATEWAY_SERVICE_PORT || 6000;

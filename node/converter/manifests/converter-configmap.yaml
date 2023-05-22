@@ -7,3 +7,4 @@ data:
   VIDEO_Q: "videos"
   AUDIO_Q: "audios"
   RABBIT_MQ_URL: "amqp://rabbitmq:5672"
+  ERROR_Q: "undelivered"

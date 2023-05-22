@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev -r dotenv/config src/app dotenv_config_path=./.env.local",
-    "tsc": "tsc",
-    "build": "npm i && npm run tsc",
+    "build": "npm i && tsc --project tsconfig.json",
     "start": "node build/app.js"
   },
   "keywords": [],
@@ -16,6 +15,7 @@
   "dependencies": {
     "amqplib": "^0.10.3",
     "axios": "^1.4.0",
+    "chokidar": "^3.5.3",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {

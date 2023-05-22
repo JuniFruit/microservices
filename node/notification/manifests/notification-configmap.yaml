@@ -5,7 +5,7 @@ metadata:
 data:
   AUDIO_Q: "audios"
   ERROR_Q: "undelivered"
-  RABBIT_MQ_URL: amqp://localhost:5672
+  RABBIT_MQ_URL: "amqp://rabbitmq:5672"
   DELETE_FILES_Q: "delete_files"
   APP_URL: http://mp3converter.com/download
   EMAIL_SEND_ENDPOINT: https://api.emailjs.com/api/v1.0/email/send

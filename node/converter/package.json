@@ -5,9 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev -r dotenv/config  src/app dotenv_config_path=./.env.local",
-    "tsc": "tsc",
-    "build": "npm i && npm run tsc",
+    "dev": "ts-node-dev -r dotenv/config  src/app dotenv_config_path=./.env",
+    "build": "npm i && tsc --project tsconfig.json",
     "start": "node build/app.js"
   },
   "keywords": [],

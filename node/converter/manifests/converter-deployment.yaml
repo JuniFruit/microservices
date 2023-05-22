@@ -21,6 +21,13 @@ spec:
       containers:
         - name: converter
           image: junifruit/converter
+          # livenessProbe:
+          #   exec:
+          #     command:
+          #       - health
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+
           envFrom:
             - configMapRef:
                 name: converter-configmap

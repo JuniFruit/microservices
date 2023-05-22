@@ -3,10 +3,10 @@ import { getChannel, sendDataToQueue } from "../rabbitmq/connect";
 import { IConsumedMsg } from "./notification.type";
 
 class NotificationService {
-  listen() {
+  async listen() {
     const channel = getChannel();
 
-    channel.consume(process.env.AUDIO_Q!, msg => {
+    await channel.consume(process.env.AUDIO_Q!, msg => {
       if (!msg) return;
       const parsedMsg = JSON.parse(Buffer.from(msg.content).toString("utf-8"));
 

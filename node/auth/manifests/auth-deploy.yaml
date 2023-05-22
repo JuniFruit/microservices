@@ -24,7 +24,7 @@ spec:
           ports:
             - containerPort: 5000
           livenessProbe:
-            initialDelaySeconds: 5
+            initialDelaySeconds: 30
             periodSeconds: 3
             timeoutSeconds: 5
             successThreshold: 1
@@ -32,7 +32,7 @@ spec:
             httpGet:
               host:
               scheme: HTTP
-              path: /health
+              path: /auth/health
               port: 5000
           envFrom:
             - configMapRef:

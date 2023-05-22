@@ -10,11 +10,11 @@ async function connectQueue() {
   try {
     connection = await amqp.connect(CONNECT_URL);
     channel = await connection.createChannel();
-    await channel.assertQueue(process.env.VIDEO_Q!, QUEUE_CONFIG);
-    await channel.assertQueue(process.env.AUDIO_Q!, QUEUE_CONFIG);
-    await channel.assertQueue(process.env.ERROR_Q! + "_messages", { durable: false });
     await channel.assertExchange(process.env.ERROR_Q!, "direct");
     await channel.assertQueue(process.env.DELETE_FILES_Q!, { durable: false });
+    await channel.assertQueue(process.env.ERROR_Q! + "_messages", { durable: false });
+    await channel.assertQueue(process.env.VIDEO_Q!, QUEUE_CONFIG);
+    await channel.assertQueue(process.env.AUDIO_Q!, QUEUE_CONFIG);
     await channel.bindQueue(
       process.env.ERROR_Q! + "_messages",
       process.env.ERROR_Q!,
