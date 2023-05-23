@@ -14,6 +14,12 @@ After installing kubectl and minikube make sure to map host to mp3conveter.com i
 127.0.0.1 rabbitmq-manager.com
 ```
 
+# Architecture
+
+Figure that shows project architecture:
+
+<img src="./Architecture.png" />
+
 # Technologies
 
 - Node
@@ -22,6 +28,7 @@ After installing kubectl and minikube make sure to map host to mp3conveter.com i
 - Minikube
 - Docker
 - Typescript
+- FFMPEG
 - RabbitMQ
 - JWT
 - Axios

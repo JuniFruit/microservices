@@ -1,15 +1,20 @@
-FROM node:16
+FROM node:16-alpine AS builder
 
-WORKDIR /usr/src/app
-
-COPY package.*json ./
-COPY tsconfig.json ./
-COPY t.ts ./
-
-RUN rm -rf node_modules && npm run build
+WORKDIR /app
 
 COPY . .
+RUN npm run build
+
+FROM node:16-alpine AS final
+
+WORKDIR /app
+
+COPY --from=builder ./app/build ./build
+COPY package.json .
+COPY package-lock.json .
+
+RUN npm ci --omit=dev
 
 EXPOSE 6001
 
-CMD ["npm","run", "start" ]
+CMD [ "node", "./build/app.js"]

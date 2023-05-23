@@ -2,6 +2,9 @@ import express from "express";
 import indexRoutes from "./routes";
 import { handleException } from "./middleware/exception.middleware";
 import bodyParser from "body-parser";
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const PORT = process.env.AUTH_SERVICE_PORT || 5000;
 
